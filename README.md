@@ -24,4 +24,6 @@ MDT_Drivers - A set of scripts and files that I've used to update the drivers in
 
 - Run_Driver_Update_Scripts - Meant to be placed with the Dell and HP scripts, this will check for the manufacturer of the computer and then run the appropriate driver updater (HP or Dell). Can be modified for other manufacturers as well
 
-- SecurityAgentCheck - An environment I worked at required several security agents to be present on the system before being deployed to a user. This script will check for and run the install commands for the agents desired if they weren't installed. 
+- SecurityAgentCheck - An environment I worked at required several security agents to be present on the system before being deployed to a user. This script will check for and run the install commands for the agents desired if they weren't installed.
+
+- Get-ServerInformation - a script to query some information about computers in your ad environment, it will the following information about the device: name, ipaddress, operating system, available drive space on c:, total physical memory, stopped services and the size of the userprofiles (c:\users) folder. 
