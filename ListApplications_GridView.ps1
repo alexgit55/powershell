@@ -1,20 +1,22 @@
-﻿    $32Bit=@()
-    $32Bit=Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*
-    $64bit=@()
-    $64bit=Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*
-    $AppList=@()
-    $AppList=$32Bit+$64bit
+$32Bit = Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* -ErrorAction SilentlyContinue
+$64Bit = Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* -ErrorAction SilentlyContinue
 
-    $FinalList=@()
-    foreach ($App in $AppList)
-    {
-        if ($App.DisplayName -eq $null) {continue}
-        $FinalList=$FinalList += $App
+$AppList = $32Bit + $64Bit
+
+$FilteredList = @{}
+foreach ($App in $AppList) {
+    if ($null -eq $App.DisplayName) { continue }
+    if ($FilteredList.ContainsKey($App.DisplayName)) {
+        if ([version]$App.DisplayVersion -gt [version]$FilteredList[$App.DisplayName].DisplayVersion) {
+            $FilteredList[$App.DisplayName] = $App
+        }
+    } else {
+        $FilteredList.Add($App.DisplayName, $App)
     }
+}
 
-    $FinalList=$FinalList | select DisplayName, DisplayVersion, UninstallString | sort Displayname
+$FinalList = $FilteredList.Values | Select-Object DisplayName, DisplayVersion, UninstallString | Sort-Object DisplayName
 
-    $DisplayList=$FinalList | Out-GridView -PassThru
+$DisplayList = $FinalList | Out-GridView -PassThru
 
-    $DisplayList | Format-List
-    
+$DisplayList | Format-List
